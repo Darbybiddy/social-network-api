@@ -4,20 +4,32 @@ getAllUsers,
 getUsersById,
 createUsers,
 updateUsers,
-deleteUsers
+deleteUsers,
+addFriend,
+removeFriend
 } = require('../../controllers/user-controller')
 
-//set up GET all and POST at /api/pizzas
+//set up GET all and POST at /api/users
 router
 .route('/')
 .get(getAllUsers)
 .post(createUsers)
 
-// Set up GET one, PUT, and DELETE at /api/pizzas/:id
+// Set up GET one, PUT, and DELETE at /api/userId
 router
-  .route('/:id')
+  .route('/:userId')
   .get(getUsersById)
   .put(updateUsers)
   .delete(deleteUsers);
+
+// /api/userId/friends/:friendId
+router
+.route('/:userId/friends')
+.post(addFriend)
+
+router
+.route('/:userId/friends/:friendId')
+.delete('removeFriend')
+
 
 module.exports = router;
