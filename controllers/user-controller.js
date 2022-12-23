@@ -4,11 +4,8 @@ const { getAllThoughts } = require("./thought-controller");
 const userController = {
   //get all users
   getAllUsers(req, res) {
-    User.find({})
-      .populate({
-        path: getAllThoughts,
-        select: "-__v",
-      })
+    User.find()
+    .select('-__v')
       .then((dbUserData) => res.json(dbUserData))
       .catch((err) => {
         console.log(err);
@@ -19,16 +16,10 @@ const userController = {
   //get one user by id
   getUsersById({ params }, res) {
     User.findOne({ _id: params.id })
-      .populate({
-        path: "thoughts",
-        populate: { path: "reactions" },
-        select: "-__v",
-      })
-      .populate({
-        path: "friends",
-        select: "-__v",
-      })
+     
       .select("-__v")
+      .populate('friends')
+      .populate('thoughts')
       .then((dbUserData) => res.json(dbUserData))
       .catch((err) => {
         console.log(err);
@@ -37,8 +28,8 @@ const userController = {
   },
 
   // create User
-  createUsers({ body }, res) {
-    User.create(body)
+  createUsers(req, res) {
+    User.create(req.body)
       .then((dbUserData) => res.json(dbUserData))
       .catch((err) => res.json(err));
   },
