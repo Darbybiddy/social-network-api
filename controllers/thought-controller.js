@@ -3,7 +3,7 @@ const { db } = require("../models/User");
 
 const thoughtController = {
   getAllThoughts(req, res) {
-    Thought.find({})
+    Thought.find()
       .then((dbThoughtData) => res.json(dbThoughtData))
       .catch((err) => {
         console.log(err);
@@ -12,8 +12,8 @@ const thoughtController = {
   },
 
   //get one thought by id
-  getThoughtById({ params }, res) {
-    Thought.findOne({ _id: params.thoughtId })
+  getThoughtsById(req, res) {
+    Thought.findOne({ _id: req.params.thoughtId })
       .then((dbThoughtData) => res.json(dbThoughtData))
       .catch((err) => {
         console.log(err);
@@ -21,11 +21,11 @@ const thoughtController = {
       });
   },
   //create thought
-  createThought({ body }, res) {
-    Thought.create(body)
+  createThoughts(req, res) {
+    Thought.create(req.body)
       .then((dbThoughtData) => {
         return User.findOneAndUpdate(
-          { _id: body.userId },
+          { _id: req.body.userId },
           { $push: { thoughts: dbThoughtData._id } },
           { new: true }
         );
@@ -35,8 +35,8 @@ const thoughtController = {
   },
 
   //update thought
-  updateThought({ params, body }, res) {
-    Thought.findByIdAndUpdate({ _id: params.id }, body, {
+  updateThoughts(req, res) {
+    Thought.findByIdAndUpdate({ _id: req.params.thoughtId }, req.body, {
       new: true,
       runValidators: true,
     })
@@ -51,21 +51,21 @@ const thoughtController = {
   },
 
   // delete pizza
-  deleteThought({ params }, res) {
-    Thought.findOneAndDelete({ _id: params.id })
+  deleteThoughts(req, res) {
+    Thought.findOneAndDelete({ _id: req.params.id })
       .then((dbThoughtData) => res.json(dbThoughtData))
       .catch((err) => res.json(err));
   },
 
   //create reactions
-  createReaction({ params }, res) {
+  createReaction(req, res) {
     Thought.findOneAndUpdate(
-      { _id: params.thoughtId },
+      { _id: req.params.thoughtId },
       {
         $push: {
           reactions: {
-            reactionBody: body.reactionBody,
-            username: body.username,
+            reactionBody: req.body.reactionBody,
+            username: req.body.username,
           },
         },
       },
@@ -82,10 +82,10 @@ const thoughtController = {
     );
   },
 
-  removeReaction({ params }, res) {
+  removeReaction(req, res) {
     Thought.findOneAndDelete(
-      { _id: params.ThoughtId },
-      { $pull: { reactions: params.reactionId } },
+      { _id: req.params.thoughtId },
+      { $pull: { reactions: req.params.reactionId } },
       { new: true }
     )
       .then((dbThoughtData) => {
@@ -98,8 +98,4 @@ const thoughtController = {
 };
 
 module.exports = thoughtController;
-// getAllThoughts,
-// getThoughtById,
-// createThoughts,
-// updateThoughts,
-// deleteThoughts
+

@@ -15,11 +15,10 @@ const userController = {
 
   //get one user by id
   getUsersById({ params }, res) {
-    User.findOne({ _id: params.id })
-     
-      .select("-__v")
-      .populate('friends')
-      .populate('thoughts')
+    User.findOne({ _id: params.userId })
+    .select("-__v")
+    .populate('friends')
+    .populate('thoughts')
       .then((dbUserData) => res.json(dbUserData))
       .catch((err) => {
         console.log(err);
@@ -35,8 +34,8 @@ const userController = {
   },
 
   // update user by id
-  updateUsers({ params, body }, res) {
-    User.findOneAndUpdate({ _id: params.id }, body, {
+  updateUsers(req, res) {
+    User.findOneAndUpdate({ _id: req.params.userId }, req.body, {
       new: true,
       runValidators: true,
     })
@@ -51,8 +50,8 @@ const userController = {
   },
 
   // delete pizza
-  deleteUsers({ params }, res) {
-    User.findOneAndDelete({ _id: params.id })
+  deleteUsers(req, res) {
+    User.findOneAndDelete({ _id: req.params.userId })
       .then((dbUserData) => res.json(dbUserData))
       .catch((err) => res.json(err));
   },
