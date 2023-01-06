@@ -69,21 +69,20 @@ const thoughtController = {
           },
         },
       },
-      { new: true },
-      { runValidators: true }
-        .then((dbThoughtData) => {
-          if (!dbThoughtData) {
-            res.status(404).json({ message: "no thought found with this id" });
-            return;
-          }
-          res.json(dbThoughtData);
-        })
-        .catch((err) => res.json(err))
-    );
+      { new: true, runValidators: true }
+    )
+      .then((dbThoughtData) => {
+        if (!dbThoughtData) {
+          res.status(404).json({ message: "no thought found with this id" });
+          return;
+        }
+        res.json(dbThoughtData);
+      })
+      .catch((err) => res.json(err));
   },
 
   removeReaction(req, res) {
-    Thought.findOneAndDelete(
+    Thought.findOneAndRemove(
       { _id: req.params.thoughtId },
       { $pull: { reactions: req.params.reactionId } },
       { new: true }
@@ -98,4 +97,3 @@ const thoughtController = {
 };
 
 module.exports = thoughtController;
-
